@@ -1,53 +1,24 @@
-/* ###############################################################
-#################### JSON Schema validator #######################
-################################################################*/
+var ajv = new (require("ajv"));
 
-dojo.ready(validation);
+const schema = require("./schema.json");
+const schema_formats = require("./schema_formats.json");
 
-function validation () {
-	
-	dojo.require('dojox.json.schema');
-	
-	/* Getting the JSON and the JSON Schema */
-	var JSON = loadFile("order-example.json");
-	var schema = loadFile("schema.json");
-			
-	var result = dojox.json.schema.validate(JSON, schema);
-	
-	if (result.valid) {
-		
-		document.getElementsByTagName("P").innerHTML("congrats!");
-		
-	} else {
-		
-		document.getElementsByTagName("P").innerHTML("next time!");
-		
-	}
-	
-}
+const valid = require("./valid.json");
+const invalid = require("./invalid.json");
 
-function loadFile(file) {
-	
-	var xhr = new XMLHttpRequest();
-	var object;
-	
-	/* Function called when state of XHR-Object changes */
-	xhr.onreadystatechange = function() {
-		
-		/* Successful data transfer and request */
-		if (this.readyState == 4 && this.status == 200) {
-			
-			/* Saving the file */
-			object = xhr.responseText;
-			
-		}
-		
-	}
-	
-	xhttp.open("GET", file, true);
-	xhttp.send(); 
-	
-	return object;
-	
-}
-			
+const formats = require("./formats.json");
+
+
+var result = ajv.validate(schema, valid);
+
+console.log("Valid order example: " + result);
+
+result = ajv.validate(schema, invalid);
+
+console.log("Invalid order example: " + result);
+
+result = ajv.validate(schema_formats, formats);
+
+console.log("Formats example: " + result);
+
+
